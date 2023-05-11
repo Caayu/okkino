@@ -6,6 +6,7 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import helmet from '@fastify/helmet';
 
 import { AppModule } from './app/app.module';
 
@@ -14,6 +15,10 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
+
+  // TODO: contentSecurityPolicy should turn on in production
+  await app.register(helmet, { contentSecurityPolicy: false });
+  app.enableCors();
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
